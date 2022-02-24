@@ -7,18 +7,20 @@ project (CMakeHelloWorld)
 #Set the pkg config path to where rtems packages are
 SET(ENV{RTEMS_PATH} /opt/rtems/6)
 SET(ENV{RTEMS_BSP_NAME} kcu105)
-
+SET(CMAKE_SYSTEM_PROCESSOR microblaze)
+SET(CMAKE_SYSTEM_VERSION 6)
+SET(CMAKE_SYSTEM_NAME rtems)
 # Change the pkg config path so cmake can find the rtems bsp .pc file
 SET(ENV{PKG_CONFIG_PATH} $ENV{RTEMS_PATH}/lib/pkgconfig)
 
 find_package(PkgConfig REQUIRED)
-pkg_search_module(PKG_RTEMS REQUIRED IMPORTED_TARGET microblaze-rtems6-kcu105)
+pkg_search_module(PKG_RTEMS REQUIRED IMPORTED_TARGET ${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}${CMAKE_SYSTEM_VERSION}-$ENV{RTEMS_BSP_NAME})
 
 # TODO Should sysroot be set?
 #set(CMAKE_SYSROOT "/opt/rtems/6/lib/pkgconfig")
 
 # Set the rtems tool names
-SET(TARGETPREFIX $ENV{RTEMS_PATH}/bin/microblaze-rtems6-)
+SET(TARGETPREFIX $ENV{RTEMS_PATH}/bin/${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}${CMAKE_SYSTEM_VERSION}-)
 SET(CMAKE_C_COMPILER            ${TARGETPREFIX}gcc)
 SET(CMAKE_CXX_COMPILER          ${TARGETPREFIX}g++)
 SET(CMAKE_LINKER                ${TARGETPREFIX}ld)
@@ -45,7 +47,7 @@ set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS ${PKG_RTEMS_STATIC_LDFLAGS})
 set( CMAKE_C_FLAGS_INIT PKG_RTEMS_CFLAGS)
 
 # Include the linker script
-set(LINKER_SCRIPT "$ENV{RTEMS_PATH}/microblaze-rtems6/$ENV{RTEMS_BSP_NAME}/lib/linkcmds")
+set(LINKER_SCRIPT "$ENV{RTEMS_PATH}/${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_SYSTEM_NAME}${CMAKE_SYSTEM_VERSION}/$ENV{RTEMS_BSP_NAME}/lib/linkcmds")
 
 # search for programs in the build host directories
 SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM   NEVER)
