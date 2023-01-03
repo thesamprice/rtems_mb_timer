@@ -5,8 +5,9 @@ project (CMakeHelloWorld)
 # Start of things that should be in a toolchain
 #
 #Set the pkg config path to where rtems packages are
-SET(ENV{RTEMS_PATH} /opt/rtems/6)
-SET(ENV{RTEMS_BSP_NAME} kcu105)
+SET(ENV{RTEMS_PATH} /home/sprice5/opt/rtems/6)
+#SET(ENV{RTEMS_PATH} /opt/rtems/6)
+SET(ENV{RTEMS_BSP_NAME} kcu105_cpu0)
 SET(CMAKE_SYSTEM_PROCESSOR microblaze)
 SET(CMAKE_SYSTEM_VERSION 6)
 SET(CMAKE_SYSTEM_NAME rtems)
