@@ -15,7 +15,13 @@ rtems_name task_name;
 
 static volatile int counter=0;
 void timer1_callback(void * none){
-  counter++;
+  volatile Microblaze_Timer *timer = _Microblaze_Timer;
+  if ( ( timer->tcsr1 & MICROBLAZE_TIMER_TCSR0_T0INT ) != 0 ) 
+  {
+    counter++;
+    /* Clear the interrupt */
+    timer->tcsr1 |= MICROBLAZE_TIMER_TCSR0_T0INT;
+  }
 }
 
 
@@ -26,7 +32,15 @@ rtems_task Init(
 {
   volatile Microblaze_Timer *timer = _Microblaze_Timer;
   int count_rate = 4000;
-  microblaze_user_clock_handler_install(timer1_callback);
+
+  rtems_status_code sc = RTEMS_SUCCESSFUL;
+  sc = rtems_interrupt_handler_install(
+    0,
+    "Clock",
+    RTEMS_INTERRUPT_SHARED,
+    timer1_callback,
+    NULL
+  );
 
 
   /* Set load register to 0 */
